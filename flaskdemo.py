@@ -13,7 +13,13 @@ def home():
 
 @app.route('/about')
 def about():
-    return "I am still working on this"
+    return render_template("about.html")
+
+
+@app.route('/random')
+def random():
+    page = wikipedia.page(wikipedia.random())
+    return render_template("results.html", page=page)
 
 
 @app.route('/search', methods=['POST', 'GET'])
