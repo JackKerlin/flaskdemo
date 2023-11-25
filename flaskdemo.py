@@ -1,3 +1,10 @@
+"""
+CP1404 Practical Jack Kerlin
+Wiki api
+Estimate: 1 hour
+Actual: 40 minutes to do the listed stuff, and another 40 to add the random and language feature
+"""
+
 from flask import Flask, render_template, request, redirect, url_for, session
 import wikipedia
 
