@@ -18,6 +18,8 @@ def about():
 
 @app.route('/random')
 def random():
+    current_language = set_language()
+    wikipedia.set_lang(current_language)
     page = wikipedia.page(wikipedia.random())
     return render_template("results.html", page=page)
 
@@ -33,11 +35,29 @@ def search():
 @app.route('/results')
 def results():
     search_term = session['search_term']
-    page = get_page(search_term)
+    current_language = set_language()
+    page = get_page(search_term, current_language)
     return render_template("results.html", page=page)
 
 
-def get_page(search_term):
+@app.route('/language', methods=['POST', 'GET'])
+def language():
+    if request.method == 'POST':
+        session['language'] = request.form['submit_button']
+        return render_template('home.html')
+    elif request.method == 'GET':
+        return render_template('language.html')
+    return render_template('language.html')
+
+
+def set_language():
+    current_language = session['language']
+    if not current_language:
+        current_language = "en"
+    return current_language
+
+def get_page(search_term, current_language):
+    wikipedia.set_lang(current_language)
     try:
         page = wikipedia.page(search_term)
     except wikipedia.exceptions.PageError:
@@ -51,7 +71,7 @@ def get_page(search_term):
             title = page_titles[2]
         else:
             title = page_titles[1]
-        page = get_page(wikipedia.page(title))
+        page = get_page(wikipedia.page(title), current_language)
     return page
 
 
