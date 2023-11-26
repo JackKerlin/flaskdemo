@@ -1,8 +1,8 @@
 """
 CP1404 Practical Jack Kerlin
-Wiki api
+Flask app to return searched summaries from wikipedia api
 Estimate: 1 hour
-Actual: 40 minutes to do the listed stuff, and another 40 to add the random and language feature
+Actual: 40 minutes to do the listed stuff, and another 30 to add the random and language feature
 """
 
 from flask import Flask, render_template, request, redirect, url_for, session
@@ -25,6 +25,7 @@ def about():
 
 @app.route('/random')
 def random():
+    """Send user to random wikipedia page summary"""
     current_language = set_language()
     wikipedia.set_lang(current_language)
     page = wikipedia.page(wikipedia.random())
@@ -49,9 +50,10 @@ def results():
 
 @app.route('/language', methods=['POST', 'GET'])
 def language():
+    """Change language of summaries"""
     if request.method == 'POST':
         session['language'] = request.form['submit_button']
-        return render_template('home.html')
+        return redirect(url_for('home'))
     elif request.method == 'GET':
         return render_template('language.html')
     return render_template('language.html')
@@ -62,6 +64,7 @@ def set_language():
     if not current_language:
         current_language = "en"
     return current_language
+
 
 def get_page(search_term, current_language):
     wikipedia.set_lang(current_language)
